@@ -153,6 +153,13 @@ public struct PlayerView: View {
                     .padding()
                     .opacity(playerModel.showController ? 1 : 0)
                 }
+
+            #else
+                .overlay(alignment: .bottom) {
+                    if playerModel.showController {
+                        ControllerView()
+                    }
+                }
 #endif
                 .overlay(alignment: .bottom) {
                     SubtitleView()
@@ -193,7 +200,7 @@ public struct PlayerView: View {
                         }
                     }
                 }
-                .background(.green)
+                .background(.black)
         }
         .animation(.default, value: playerModel.showController)
         //.preferredColorScheme(.dark)

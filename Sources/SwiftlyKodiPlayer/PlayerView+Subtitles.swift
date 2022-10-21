@@ -65,9 +65,9 @@ extension PlayerView.PlayerModel {
     
     /// Calculate the subtitle offset
     func setSubtitleOffset() {
-        
+        #if os(tvOS)
         let playerSize = CGSize(width: 1920, height: 1080)
-        
+#endif
         let videoRatio = (naturalSize.width / naturalSize.height)
         let viewRatio = (playerSize.width / playerSize.height)
         var offset: Double = showController ? PlayerView.PlayerModel.controllerHeight : 20

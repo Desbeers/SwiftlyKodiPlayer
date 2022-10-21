@@ -21,7 +21,7 @@ extension PlayerView {
         /// The body of the View
         public var body: some View {
             VStack {
-                Picker("subtitle tracks", selection: $playerModel.selectedTab) {
+                Picker("Fields", selection: $playerModel.selectedTab) {
                     Text("Info")
                         .tag(PlayerModel.Tabs.info)
                     Text("Audio")
@@ -30,6 +30,8 @@ extension PlayerView {
                         .tag(PlayerModel.Tabs.subtitles)
                 }
                 .padding(.horizontal)
+                .pickerStyle(.segmented)
+                .labelsHidden()
                 Group {
                     switch playerModel.selectedTab {
                         
