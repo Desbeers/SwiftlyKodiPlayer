@@ -5,7 +5,11 @@
 //  Created by Nick Berendsen on 21/10/2022.
 //
 
-import Foundation
+import AVFoundation
+import AVKit
+import SwiftUI
+import KSPlayer
+import SwiftlyKodiAPI
 
 #if os(tvOS)
 import Combine
