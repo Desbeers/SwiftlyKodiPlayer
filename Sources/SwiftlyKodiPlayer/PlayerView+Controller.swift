@@ -43,7 +43,7 @@ extension PlayerView {
                         SubtitleSettingsView()
                     }
                 }
-                .frame(height: 300)
+                .frame(height: PlayerModel.controllerHeight - 40)
                 .padding(.horizontal)
             }
             

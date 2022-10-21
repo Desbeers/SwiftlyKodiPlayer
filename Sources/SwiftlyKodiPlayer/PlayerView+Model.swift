@@ -136,5 +136,11 @@ extension PlayerView {
 }
 
 extension PlayerView.PlayerModel {
+#if os(tvOS)
     static let controllerHeight: Double = 340
+#endif
+    
+#if os(macOS)
+    static let controllerHeight: Double = 140
+#endif
 }
