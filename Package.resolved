@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "KSPlayer",
+        "repositoryURL": "https://github.com/kingslay/KSPlayer",
+        "state": {
+          "branch": "develop",
+          "revision": "043e92717d161c355c797bdc374276d1445689d2",
+          "version": null
+        }
+      },
+      {
+        "package": "SwiftlyKodiAPI",
+        "repositoryURL": "https://github.com/Desbeers/SwiftlyKodiAPI.git",
+        "state": {
+          "branch": "main",
+          "revision": "8a683e5a8f4a764707ac2d3de72c2fb0f4b2ba74",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
