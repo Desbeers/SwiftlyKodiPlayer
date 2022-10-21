@@ -20,7 +20,7 @@ let package = Package(
             branch: "main"
         ),
         .package(
-            url: "https://github.com/kingslay/KSPlayer",
+            url: "https://github.com/kingslay/KSPlayer.git",
             branch: "develop"
         )
     ],
