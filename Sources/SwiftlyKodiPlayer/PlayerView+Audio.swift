@@ -1,6 +1,6 @@
 //
 //  PlayerView+Audio.swift
-//  KomodioTV
+//  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
 //

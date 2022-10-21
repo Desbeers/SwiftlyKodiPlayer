@@ -1,8 +1,8 @@
 //
-//  File.swift
-//  
+//  PlayerView+tvOS.swift
+//  SwiftlyKodiPlayer
 //
-//  Created by Nick Berendsen on 21/10/2022.
+//  © 2022 Nick Berendsen
 //
 
 import AVFoundation

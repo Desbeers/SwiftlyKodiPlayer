@@ -1,6 +1,6 @@
 //
 //  PlayerView+Model.swift
-//  Kodio
+//  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
 //
@@ -138,9 +138,9 @@ extension PlayerView {
 extension PlayerView.PlayerModel {
 #if os(tvOS)
     static let controllerHeight: Double = 340
-#endif
-    
-#if os(macOS)
+#elseif os(macOS)
     static let controllerHeight: Double = 140
+#else
+    static let controllerHeight: Double = 200
 #endif
 }

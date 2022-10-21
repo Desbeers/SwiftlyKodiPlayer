@@ -1,6 +1,6 @@
 //
 //  PlayerView+Subtitles.swift
-//  Kodio
+//  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
 //

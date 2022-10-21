@@ -1,6 +1,6 @@
 //
 //  PlayerView.swift
-//  Kodio
+//  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
 //
@@ -81,7 +81,7 @@ public struct PlayerView: View {
                         break
                     }
                 }
-#if canImport(UIKit)
+#if os(tvOS)
                 .onSwipe { direction in
                     if direction == .down {
                         playerModel.showController.toggle()
@@ -141,43 +141,44 @@ public struct PlayerView: View {
                         }
                     }
                 }
-#if os(iOS)
-                .overlay(alignment: .topLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark").imageScale(.large)
-                            .padding()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding()
-                    .opacity(playerModel.showController ? 1 : 0)
-                }
-
-            #else
-                .overlay(alignment: .bottom) {
-                    if playerModel.showController {
-                        ControllerView()
-                    }
-                }
-#endif
                 .overlay(alignment: .bottom) {
                     SubtitleView()
                 }
-#if canImport(UIKit)
-                .fullScreenCover(isPresented: $playerModel.showController) {
-                    VStack {
-                        Spacer()
-                        ControllerView()
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                }
-#endif
+                .controller()
+//#if os(iOS)
+//                .overlay(alignment: .topLeading) {
+//                    Button {
+//                        dismiss()
+//                    } label: {
+//                        Image(systemName: "xmark").imageScale(.large)
+//                            .padding()
+//                    }
+//                    .buttonStyle(.borderedProminent)
+//                    .padding()
+//                    .opacity(playerModel.showController ? 1 : 0)
+//                }
+//
+//            #else
+//                .overlay(alignment: .bottom) {
+//                    if playerModel.showController {
+//                        ControllerView()
+//                    }
+//                }
+//#endif
+
+//#if canImport(UIKit)
+//                .fullScreenCover(isPresented: $playerModel.showController) {
+//                //.fullScreenCover(isPresented: $playerModel.showController) {
+//                    VStack {
+//                        Spacer()
+//                        ControllerView()
+//                    }
+//                    .edgesIgnoringSafeArea(.all)
+//                }
+//#endif
                 .overlay(alignment: .center) {
                     ProgressView().opacity(playerModel.state == .buffering ? 1 : 0)
-#if !os(tvOS)
-                        .keyboardShortcut(.space, modifiers: .none)
-#endif
+                        .tint(.white)
                 }
                 .edgesIgnoringSafeArea(.all)
                 .onChange(of: geometry.size) { value in
@@ -203,33 +204,7 @@ public struct PlayerView: View {
                 .background(.black)
         }
         .animation(.default, value: playerModel.showController)
-        //.preferredColorScheme(.dark)
         .environmentObject(playerModel)
         .environmentObject(player.coordinator)
-        
-        //#if os(tvOS)
-        //.onPlayPauseCommand {
-        //    print("Toggle Play")
-        //    config.isPlay.toggle()
-        //}
-        //#endif
-        
-#if os(macOS)
-        .onTapGesture(count: 2) {
-            print("FULL")
-            NSApplication.shared.keyWindow?.toggleFullScreen(self)
-        }
-        
-        .gesture(TapGesture(count: 2).onEnded {
-            print("double clicked")
-        })
-#else
-        .navigationBarHidden(true)
-#endif
     }
 }
-
-extension EventModifiers {
-    static let none = Self()
-}
-
