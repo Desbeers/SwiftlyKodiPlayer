@@ -16,16 +16,50 @@ import Combine
 
 extension KodiPlayerView {
     
+    // MARK: Gestures
+    
+    /// Gestures for the macOS player
+    public struct PlayerGestures: ViewModifier {
+        /// The Coordinator model
+        @EnvironmentObject private var config: KSVideoPlayer.Coordinator
+        /// The Player model
+        @EnvironmentObject var playerModel: KodiPlayerView.PlayerModel
+        /// Dismiss the window
+        @Environment(\.dismiss) private var dismiss
+        /// The body of the ViewModifier
+        public func body(content: Content) -> some View {
+            content
+            /// 'focusable' is needed or else 'on*' does not work
+                .focusable()
+                .onTapGesture(count: 1) {
+                    playerModel.showController.toggle()
+                }
+                .onPlayPauseCommand {
+                    config.isPlay.toggle()
+                }
+        }
+    }
+    
+    // MARK: Controller
+    
+    /// Show the controller view
     public struct ShowControllerView: ViewModifier {
         /// The Player model
         @EnvironmentObject var playerModel: KodiPlayerView.PlayerModel
-        
+        /// The Coordinator model
+        @EnvironmentObject private var config: KSVideoPlayer.Coordinator
         public func body(content: Content) -> some View {
             content
                 .fullScreenCover(isPresented: $playerModel.showController) {
                     VStack {
                         Spacer()
                         ControllerView()
+                            .onExitCommand {
+                                playerModel.showController = false
+                            }
+                            .onPlayPauseCommand {
+                                config.isPlay.toggle()
+                            }
                     }
                     .edgesIgnoringSafeArea(.all)
                 }
@@ -119,4 +153,5 @@ extension KodiPlayerView {
         }
     }
 }
+
 #endif

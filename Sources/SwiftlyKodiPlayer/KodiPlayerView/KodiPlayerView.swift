@@ -5,8 +5,8 @@
 //  © 2022 Nick Berendsen
 //
 
-import AVFoundation
-import AVKit
+//import AVFoundation
+//import AVKit
 import SwiftUI
 import KSPlayer
 import SwiftlyKodiAPI
@@ -17,14 +17,15 @@ public struct KodiPlayerView: View {
     let item: any KodiItem
     /// The Player model
     @StateObject var playerModel: PlayerModel
-    
-    @EnvironmentObject private var config: KSVideoPlayer.Coordinator
     /// Dismiss the window
     @Environment(\.dismiss) private var dismiss
     /// The actual player
     let player: KSVideoPlayer
     /// Init the player with the video
     public init(item: any KodiItem, resume: Bool = false) {
+        /// Init the player
+        KSOptions.firstPlayerType = KSMEPlayer.self
+        KSOptions.isAutoPlay = true
         let url = URL(string: Files.getFullPath(file: item.file, type: .file))!
         let options = KSOptions()
         if resume {
@@ -73,7 +74,8 @@ public struct KodiPlayerView: View {
                         }
                         playerModel.naturalSize = layer.player.naturalSize
                     case .paused:
-                        playerModel.showController = true
+                        //playerModel.showController = true
+                        break
                     case .playedToTheEnd:
                         /// Close the view
                         dismiss()
@@ -81,37 +83,6 @@ public struct KodiPlayerView: View {
                         break
                     }
                 }
-#if os(tvOS)
-                .onSwipe { direction in
-                    if direction == .down {
-                        playerModel.showController.toggle()
-                    } else if direction == .left {
-                        player.coordinator.skip(interval: -15)
-                    } else if direction == .right {
-                        player.coordinator.skip(interval: 15)
-                    }
-                }
-            /// This is needed or else 'onMoveCommand' does not work
-                .focusable()
-                .onMoveCommand { direction in  // <-- this $#!* can't tell a move swipe from a touch (direction is of type: MoveCommandDirection)
-                    print("Direction: \(direction)")
-                    if direction == .left { print(">>> left swipe detected") }
-                    if direction == .right { print(">>> right swipe detected") }
-                    if direction == .up { print(">>> up swipe detected") }
-                    if direction == .down {
-                        print(">>> down swipe detected")
-                        playerModel.showController.toggle()
-                    }
-                }
-#endif
-#if !os(tvOS)
-                .onTapGesture {
-                    playerModel.showController.toggle()
-#if os(macOS)
-                    playerModel.showController ? NSCursor.unhide() : NSCursor.setHiddenUntilMouseMoves(true)
-#endif
-                }
-#endif
             /// Keep an eye on the subtitles
                 .onReceive(player.coordinator.$selectedSubtitleTrack) { track in
                     guard let subtitle = track as? SubtitleInfo else {
@@ -122,16 +93,37 @@ public struct KodiPlayerView: View {
                         playerModel.selectedSubtitle = try? result.get()
                     }
                 }
-            
-            
+            /// Overlay the subtitles
                 .overlay(alignment: .bottom) {
                     SubtitleView()
                 }
+            /// Overlay the progress
                 .overlay(alignment: .center) {
-                    ProgressView().opacity(playerModel.state == .buffering ? 1 : 0)
-                        .tint(.white)
+                    switch playerModel.state {
+                    case .buffering:
+                        ProgressView()
+                        /// - Note: 'tint' does not work on macOS to set the color
+                            .colorInvert() /// make the spinner a semi-opaque white
+                            .brightness(1) /// ramp up the brightness
+                    case .paused:
+                        VStack {
+                            Image(systemName: "pause.fill")
+                                .font(.largeTitle)
+                                .foregroundColor(.white)
+                            Text(remainingTime(duration: (playerModel.totalTime - playerModel.currentTime)))
+                                .padding()
+                        }
+                        .padding()
+                        .background(.thinMaterial)
+                        .cornerRadius(20)
+                    default:
+                        EmptyView()
+                    }
                 }
+            /// Add the controller view
                 .controller()
+            /// Add platform specific gestures
+                .gestures()
             /// Actions when the View is ready
                 .task {
                     /// Store the View size
@@ -161,7 +153,18 @@ public struct KodiPlayerView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .animation(.default, value: playerModel.showController)
+        .animation(.default, value: playerModel.state)
         .environmentObject(playerModel)
         .environmentObject(player.coordinator)
+    }
+    
+    /// Format the remaining time
+    private func remainingTime(duration: Int) -> String {
+        let duration = TimeInterval(duration)
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.allowedUnits = [ .hour, .minute ]
+        formatter.zeroFormattingBehavior = [ .default ]
+        return "\(formatter.string(from: duration) ?? "Unknown time") to go..."
     }
 }

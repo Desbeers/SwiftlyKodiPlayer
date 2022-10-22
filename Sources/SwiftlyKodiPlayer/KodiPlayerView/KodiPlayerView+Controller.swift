@@ -53,15 +53,6 @@ extension KodiPlayerView {
             .cornerRadius(20)
             .padding()
             .animation(.default, value: playerModel.selectedTab)
-#if os(tvOS)
-            .onExitCommand {
-                playerModel.showController = false
-            }
-            .onPlayPauseCommand {
-                print("Toggle Play")
-                config.isPlay.toggle()
-            }
-#endif
         }
     }
 }

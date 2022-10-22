@@ -27,7 +27,7 @@ extension KodiPlayerView {
         /// The metadata of the video
         public var metaData: MetaData
         /// The state of the player
-        public var state: KSPlayerState = .buffering
+        @Published public var state: KSPlayerState = .buffering
         /// The selected tab
         @Published var selectedTab: Tabs = .info
         
