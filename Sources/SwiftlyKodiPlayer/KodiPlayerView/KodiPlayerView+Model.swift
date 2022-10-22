@@ -48,7 +48,6 @@ extension KodiPlayerView {
         /// The size of the ControlView
         @Published public var controllerSize = CGSize() {
             didSet {
-                dump(controllerSize)
                 setSubtitleOffset()
             }
         }
