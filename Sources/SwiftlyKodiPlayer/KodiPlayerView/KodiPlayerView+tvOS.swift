@@ -1,5 +1,5 @@
 //
-//  PlayerView+tvOS.swift
+//  KodiPlayerView+tvOS.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -14,7 +14,7 @@ import SwiftlyKodiAPI
 #if os(tvOS)
 import Combine
 
-extension PlayerView {
+extension KodiPlayerView {
     
     public struct ShowControllerView: ViewModifier {
         /// The Player model

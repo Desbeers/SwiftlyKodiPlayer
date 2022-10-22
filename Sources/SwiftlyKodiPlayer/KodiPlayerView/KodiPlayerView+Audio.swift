@@ -1,5 +1,5 @@
 //
-//  PlayerView+Audio.swift
+//  KodiPlayerView+Audio.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftlyKodiAPI
 import KSPlayer
 
-extension PlayerView {
+extension KodiPlayerView {
     
     /// Audio Settings View
     struct AudioSettingsView: View {

@@ -1,5 +1,5 @@
 //
-//  PlayerView+Info.swift
+//  KodiPlayerView+Info.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -10,7 +10,7 @@ import SwiftlyKodiAPI
 import KSPlayer
 import Foundation
 
-extension PlayerView {
+extension KodiPlayerView {
     
     /// The Info View for the Controller
     struct InfoView: View {

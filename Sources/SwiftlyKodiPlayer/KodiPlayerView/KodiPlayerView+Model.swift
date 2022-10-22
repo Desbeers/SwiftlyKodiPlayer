@@ -1,5 +1,5 @@
 //
-//  PlayerView+Model.swift
+//  KodiPlayerView+Model.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -9,7 +9,7 @@ import SwiftUI
 import KSPlayer
 import SwiftlyKodiAPI
 
-extension PlayerView {
+extension KodiPlayerView {
     
     /// The model for the video player
     public class PlayerModel: ObservableObject {
@@ -150,7 +150,7 @@ extension PlayerView {
     }
 }
 
-extension PlayerView.PlayerModel {
+extension KodiPlayerView.PlayerModel {
 #if os(tvOS)
     static let controllerHeight: Double = 300
 #elseif os(macOS)

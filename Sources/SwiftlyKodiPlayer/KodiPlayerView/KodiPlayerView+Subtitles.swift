@@ -1,5 +1,5 @@
 //
-//  PlayerView+Subtitles.swift
+//  KodiPlayerView+Subtitles.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftlyKodiAPI
 import KSPlayer
 
-extension PlayerView {
+extension KodiPlayerView {
     
     struct SubtitleView: View {
         @EnvironmentObject var playerModel: PlayerModel
@@ -61,18 +61,21 @@ extension PlayerView {
     }
 }
 
-extension PlayerView.PlayerModel {
+extension KodiPlayerView.PlayerModel {
     
     /// Calculate the subtitle offset
     func setSubtitleOffset() {
+        let controllerOffset = KodiPlayerView.PlayerModel.controllerHeight * 1.4
         let videoRatio = (naturalSize.width / naturalSize.height)
         let viewRatio = (playerSize.width / playerSize.height)
-        var offset: Double = showController ? PlayerView.PlayerModel.controllerHeight * 1.4 : 20
+        var offset: Double = 20
         if viewRatio < videoRatio {
             /// Bars on top
             let videoHeight = playerSize.width / videoRatio
             offset = ((playerSize.height - videoHeight) / 2.0) + offset
         }
         subtitleOffset = offset
+        
+        subtitleOffset = showController ? (offset <= controllerOffset ? controllerOffset : offset) : offset
     }
 }

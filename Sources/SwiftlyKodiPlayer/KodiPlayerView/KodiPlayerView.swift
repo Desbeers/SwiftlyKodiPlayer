@@ -1,5 +1,5 @@
 //
-//  PlayerView.swift
+//  KodiPlayerView.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -11,10 +11,10 @@ import SwiftUI
 import KSPlayer
 import SwiftlyKodiAPI
 
-/// The Video Player View
-public struct PlayerView: View {
-    /// The video we want to play
-    let video: any KodiItem
+/// The Kodi Player View
+public struct KodiPlayerView: View {
+    /// The item we want to play
+    let item: any KodiItem
     /// The Player model
     @StateObject var playerModel: PlayerModel
     
@@ -24,15 +24,15 @@ public struct PlayerView: View {
     /// The actual player
     let player: KSVideoPlayer
     /// Init the player with the video
-    public init(video: any KodiItem, resume: Bool = false) {
-        let url = URL(string: Files.getFullPath(file: video.file, type: .file))!
+    public init(item: any KodiItem, resume: Bool = false) {
+        let url = URL(string: Files.getFullPath(file: item.file, type: .file))!
         let options = KSOptions()
         if resume {
-            options.startPlayTime = video.resume.position
+            options.startPlayTime = item.resume.position
         }
         player = KSVideoPlayer(url: url, options: options)
-        _playerModel = StateObject(wrappedValue: PlayerModel(video: video))
-        self.video = video
+        _playerModel = StateObject(wrappedValue: PlayerModel(video: item))
+        self.item = item
     }
     /// The body of the View
     public var body: some View {
@@ -149,11 +149,11 @@ public struct PlayerView: View {
                         if playerModel.state == .playedToTheEnd {
                             /// Mark as played
                             print("End of video, mark as played")
-                            await video.markAsPlayed()
+                            await item.markAsPlayed()
                         } else {
                             /// Set resume time
                             print("Video is playing, set resume point")
-                            await video.setResumeTime(time: Double(playerModel.currentTime))
+                            await item.setResumeTime(time: Double(playerModel.currentTime))
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 //
-//  PlayerView+Controller.swift
+//  KodiPlayerView+Controller.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -9,9 +9,8 @@ import SwiftUI
 import SwiftlyKodiAPI
 import KSPlayer
 
-extension PlayerView {
-    
-    
+extension KodiPlayerView {
+
     /// The Controller View for the player
     struct ControllerView: View {
         /// The Player model

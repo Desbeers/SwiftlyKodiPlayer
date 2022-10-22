@@ -1,5 +1,5 @@
 //
-//  PlayerView+iOS.swift
+//  KodiPlayerView+iOS.swift
 //  SwiftlyKodiPlayer
 //
 //  © 2022 Nick Berendsen
@@ -9,7 +9,7 @@ import SwiftUI
 
 #if os(iOS)
 
-extension PlayerView {
+extension KodiPlayerView {
     
     public struct ShowControllerView: ViewModifier {
         /// The Player model
