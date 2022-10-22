@@ -30,33 +30,36 @@ extension KodiPlayerView {
         @EnvironmentObject private var config: KSVideoPlayer.Coordinator
         /// The body of the View
         var body: some View {
-            VStack(spacing: 0) {
-                Button(action: {
-                    config.selectedSubtitleTrack = nil
-                }, label: {
-                    Label(title: {
-                        Text("None")
-                            .frame(width: 300, alignment: .leading)
-                    }, icon: {
-                        Image(systemName: "checkmark")
-                            .opacity(config.selectedSubtitleTrack == nil ? 1 : 0)
-                    })
-                })
-                ForEach(config.subtitleTracks, id: \.trackID) { track in
+            ScrollView {
+                VStack {
                     Button(action: {
-                        config.selectedSubtitleTrack = config.subtitleTracks.first { $0.trackID == track.trackID }
+                        config.selectedSubtitleTrack = nil
                     }, label: {
                         Label(title: {
-                            Text(Locale.current.localizedString(forLanguageCode: track.name) ?? track.name)
+                            Text("None")
                                 .frame(width: 300, alignment: .leading)
                         }, icon: {
                             Image(systemName: "checkmark")
-                                .opacity(config.selectedSubtitleTrack?.trackID == track.trackID ? 1 : 0)
+                                .opacity(config.selectedSubtitleTrack == nil ? 1 : 0)
                         })
                     })
+                    ForEach(config.subtitleTracks, id: \.trackID) { track in
+                        Button(action: {
+                            config.selectedSubtitleTrack = config.subtitleTracks.first { $0.trackID == track.trackID }
+                        }, label: {
+                            Label(title: {
+                                Text(Locale.current.localizedString(forLanguageCode: track.name) ?? track.name)
+                                    .frame(width: 300, alignment: .leading)
+                            }, icon: {
+                                Image(systemName: "checkmark")
+                                    .opacity(config.selectedSubtitleTrack?.trackID == track.trackID ? 1 : 0)
+                            })
+                        })
+                    }
                 }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 100)
             }
-            .buttonStyle(.plain)
         }
     }
 }
@@ -65,7 +68,7 @@ extension KodiPlayerView.PlayerModel {
     
     /// Calculate the subtitle offset
     func setSubtitleOffset() {
-        let controllerOffset = KodiPlayerView.PlayerModel.controllerHeight * 1.4
+        let controllerOffset = controllerSize.height
         let videoRatio = (naturalSize.width / naturalSize.height)
         let viewRatio = (playerSize.width / playerSize.height)
         var offset: Double = 20

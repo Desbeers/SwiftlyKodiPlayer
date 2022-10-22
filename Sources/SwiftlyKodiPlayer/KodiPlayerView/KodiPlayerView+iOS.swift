@@ -28,24 +28,25 @@ extension KodiPlayerView {
                 .onTapGesture(count: 2) {
                     config.isPlay.toggle()
                 }
-                .onTapGesture(count: 1) {
-                    playerModel.showController.toggle()
-                }
                 .gesture(
                     DragGesture(minimumDistance: 3.0, coordinateSpace: .local)
                         .onEnded { value in
                             print(value.translation)
                             switch(value.translation.width, value.translation.height) {
                             case (...0, -30...30):
-                                print("left swipe")
-                            case (0..., -30...30):
-                                print("right swipe")
-                            case (-100...100, ...0):
-                                print("up swipe")
-                            case (-100...100, 0...):
-                                print("down swipe")
+                                /// left swipe
                                 dismiss()
-                            default:  print("no clue")
+                            case (0..., -30...30):
+                                /// right swipe
+                                dismiss()
+                            case (-100...100, ...0):
+                                /// up swipe
+                                playerModel.showController.toggle()
+                            case (-100...100, 0...):
+                                /// down swipe
+                                playerModel.showController.toggle()
+                            default:
+                                break
                             }
                         }
                 )
@@ -78,6 +79,7 @@ extension KodiPlayerView {
                     if playerModel.showController {
                         //Spacer()
                         KodiPlayerView.ControllerView()
+                            .frame(height: 200)
                     }
                 }
         }

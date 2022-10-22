@@ -17,6 +17,8 @@ public struct KodiPlayerView: View {
     let item: any KodiItem
     /// The Player model
     @StateObject var playerModel: PlayerModel
+    /// The state of the player
+    @State private var state: KSPlayerState = .prepareToPlay
     /// Dismiss the window
     @Environment(\.dismiss) private var dismiss
     /// The actual player
@@ -55,24 +57,34 @@ public struct KodiPlayerView: View {
                         playerModel.subtitleText = nil
                     }
                 }
-                .onStateChanged { layer, state in
-                    playerModel.state = state
-                    switch state {
+                .onStateChanged { layer, status in
+                    state = status
+                    playerModel.state = status
+                    switch playerModel.state {
                     case .prepareToPlay:
                         break
                     case .readyToPlay:
-                        if let track = player.coordinator.subtitleTracks.first {
-                            player.coordinator.selectedSubtitleTrack = track
+                        /// Select the first subtitle
+                        if let subtitle = player.coordinator.subtitleTracks.first {
+                            player.coordinator.selectedSubtitleTrack = subtitle
                         }
+                        /// Select the last audio track; that should be the highest quality
+                        if let audio = player.coordinator.audioTracks.last {
+                            player.coordinator.selectedAudioTrack = audio
+                        }
+                        /// Store the natural sie of the video; used to calculate subtitle offset
+                        playerModel.naturalSize = layer.player.naturalSize
                     case .buffering:
                         break
                     case .bufferFinished:
-                        if playerModel.showController {
-                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + KSOptions.animateDelayTimeInterval) {
-                                playerModel.showController = false
-                            }
-                        }
-                        playerModel.naturalSize = layer.player.naturalSize
+                        break
+//                        if playerModel.showController {
+//                            Task {
+//                                try await Task.sleep(nanoseconds: 1_000_000_000)
+//                                playerModel.showController = false
+//                            }
+//                        }
+                        //playerModel.naturalSize = layer.player.naturalSize
                     case .paused:
                         //playerModel.showController = true
                         break
@@ -97,10 +109,10 @@ public struct KodiPlayerView: View {
                 .overlay(alignment: .bottom) {
                     SubtitleView()
                 }
-            /// Overlay the progress
+            /// Overlay the state
                 .overlay(alignment: .center) {
-                    switch playerModel.state {
-                    case .buffering:
+                    switch state {
+                    case .prepareToPlay, .buffering:
                         ProgressView()
                         /// - Note: 'tint' does not work on macOS to set the color
                             .colorInvert() /// make the spinner a semi-opaque white
@@ -109,7 +121,6 @@ public struct KodiPlayerView: View {
                         VStack {
                             Image(systemName: "pause.fill")
                                 .font(.largeTitle)
-                                .foregroundColor(.white)
                             Text(remainingTime(duration: (playerModel.totalTime - playerModel.currentTime)))
                                 .padding()
                         }
@@ -138,7 +149,7 @@ public struct KodiPlayerView: View {
             /// Actions when the View is dismissed
                 .onDisappear {
                     Task {
-                        if playerModel.state == .playedToTheEnd {
+                        if state == .playedToTheEnd {
                             /// Mark as played
                             print("End of video, mark as played")
                             await item.markAsPlayed()
@@ -153,7 +164,7 @@ public struct KodiPlayerView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .animation(.default, value: playerModel.showController)
-        .animation(.default, value: playerModel.state)
+        .animation(.default, value: state)
         .environmentObject(playerModel)
         .environmentObject(player.coordinator)
     }

@@ -54,6 +54,9 @@ extension KodiPlayerView {
                 case 125:
                     /// Arrow down
                     playerModel.showController.toggle()
+                case 53:
+                    /// Escape
+                    playerModel.showController = false
                 default:
                     break
                 }
@@ -108,6 +111,7 @@ extension KodiPlayerView {
                 .overlay(alignment: .bottom) {
                     if playerModel.showController {
                         KodiPlayerView.ControllerView()
+                            .frame(height: 200)
                     }
                 }
         }

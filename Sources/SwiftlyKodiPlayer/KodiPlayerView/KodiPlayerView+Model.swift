@@ -27,7 +27,7 @@ extension KodiPlayerView {
         /// The metadata of the video
         public var metaData: MetaData
         /// The state of the player
-        @Published public var state: KSPlayerState = .buffering
+        public var state: KSPlayerState = .buffering
         /// The selected tab
         @Published var selectedTab: Tabs = .info
         
@@ -36,18 +36,19 @@ extension KodiPlayerView {
         /// The natural size of the video
         @Published public var naturalSize = CGSize() {
             didSet {
-                print("Natural size set")
-                dump(naturalSize)
                 setSubtitleOffset()
             }
         }
         /// The size of the PlayerView
         @Published public var playerSize = CGSize() {
             didSet {
-                print("Player size set")
-                
-                dump(playerSize)
-                
+                setSubtitleOffset()
+            }
+        }
+        /// The size of the ControlView
+        @Published public var controllerSize = CGSize() {
+            didSet {
+                dump(controllerSize)
                 setSubtitleOffset()
             }
         }
@@ -148,14 +149,4 @@ extension KodiPlayerView {
         
 
     }
-}
-
-extension KodiPlayerView.PlayerModel {
-#if os(tvOS)
-    static let controllerHeight: Double = 300
-#elseif os(macOS)
-    static let controllerHeight: Double = 140
-#else
-    static let controllerHeight: Double = 200
-#endif
 }

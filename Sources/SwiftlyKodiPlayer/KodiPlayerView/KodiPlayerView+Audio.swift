@@ -20,7 +20,7 @@ extension KodiPlayerView {
         /// The body of the View
         var body: some View {
             ScrollView {
-                VStack(spacing: 0) {
+                VStack {
                     Button(action: {
                         config.selectedAudioTrack = nil
                         selectedAudioTrack = nil

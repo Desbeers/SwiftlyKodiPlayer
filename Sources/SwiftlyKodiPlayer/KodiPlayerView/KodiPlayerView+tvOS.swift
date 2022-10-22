@@ -54,6 +54,7 @@ extension KodiPlayerView {
                     VStack {
                         Spacer()
                         ControllerView()
+                            .frame(height: 380)
                             .onExitCommand {
                                 playerModel.showController = false
                             }
