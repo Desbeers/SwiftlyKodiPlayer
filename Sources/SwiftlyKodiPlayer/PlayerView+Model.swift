@@ -93,6 +93,21 @@ extension PlayerView {
             case subtitles
         }
         
+        func getArtwork() async {
+            if let url = metaData.artworkURL {
+                do {
+                    let (data, _) = try await URLSession.shared.data(from: url)
+#if os(macOS)
+                    metaData.artwork = Image(nsImage: NSImage(data: data)!)
+#else
+                    metaData.artwork = Image(uiImage: UIImage(data: data)!)
+#endif
+                } catch {
+                    /// Ignore it...
+                }
+            }
+        }
+        
         static func getMetaData(video: any KodiItem) -> MetaData {
             var metaData = MetaData()
             
@@ -137,7 +152,7 @@ extension PlayerView {
 
 extension PlayerView.PlayerModel {
 #if os(tvOS)
-    static let controllerHeight: Double = 340
+    static let controllerHeight: Double = 300
 #elseif os(macOS)
     static let controllerHeight: Double = 140
 #else

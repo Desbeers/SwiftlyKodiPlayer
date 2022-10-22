@@ -44,7 +44,7 @@ extension PlayerView {
                     }
                 }
                 .transition(.move(edge: .bottom))
-                .frame(height: PlayerModel.controllerHeight - 40)
+                .frame(height: PlayerModel.controllerHeight)
                 .padding(.horizontal)
             }
             

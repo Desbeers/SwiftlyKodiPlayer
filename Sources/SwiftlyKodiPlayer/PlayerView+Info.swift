@@ -30,6 +30,7 @@ extension PlayerView {
                     Text(playerModel.metaData.title)
                         .font(.headline)
                     Text(playerModel.metaData.description)
+                    Spacer()
                     Slider(value: Binding {
                         Double(playerModel.currentTime)
                     } set: { newValue, _ in

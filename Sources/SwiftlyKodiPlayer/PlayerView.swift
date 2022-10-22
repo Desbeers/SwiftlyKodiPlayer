@@ -112,6 +112,7 @@ public struct PlayerView: View {
 #endif
                 }
 #endif
+            /// Keep an eye on the subtitles
                 .onReceive(player.coordinator.$selectedSubtitleTrack) { track in
                     guard let subtitle = track as? SubtitleInfo else {
                         playerModel.selectedSubtitle = nil
@@ -122,6 +123,27 @@ public struct PlayerView: View {
                     }
                 }
             
+            
+                .overlay(alignment: .bottom) {
+                    SubtitleView()
+                }
+                .overlay(alignment: .center) {
+                    ProgressView().opacity(playerModel.state == .buffering ? 1 : 0)
+                        .tint(.white)
+                }
+                .controller()
+            /// Actions when the View is ready
+                .task {
+                    /// Store the View size
+                    playerModel.playerSize = geometry.size
+                    /// Load the poster art
+                    await playerModel.getArtwork()
+                }
+            /// Keep an eye on the window side; I'm a mac user!
+                .onChange(of: geometry.size) { value in
+                    playerModel.playerSize = value
+                }
+            /// Actions when the View is dismissed
                 .onDisappear {
                     Task {
                         if playerModel.state == .playedToTheEnd {
@@ -129,80 +151,15 @@ public struct PlayerView: View {
                             print("End of video, mark as played")
                             await video.markAsPlayed()
                         } else {
-                            dump(playerModel.currentTime)
                             /// Set resume time
                             print("Video is playing, set resume point")
                             await video.setResumeTime(time: Double(playerModel.currentTime))
                         }
                     }
-                    if let playerLayer = player.coordinator.playerLayer {
-                        if !playerLayer.isPipActive {
-                            player.coordinator.playerLayer?.pause()
-                        }
-                    }
-                }
-                .overlay(alignment: .bottom) {
-                    SubtitleView()
-                }
-                .controller()
-//#if os(iOS)
-//                .overlay(alignment: .topLeading) {
-//                    Button {
-//                        dismiss()
-//                    } label: {
-//                        Image(systemName: "xmark").imageScale(.large)
-//                            .padding()
-//                    }
-//                    .buttonStyle(.borderedProminent)
-//                    .padding()
-//                    .opacity(playerModel.showController ? 1 : 0)
-//                }
-//
-//            #else
-//                .overlay(alignment: .bottom) {
-//                    if playerModel.showController {
-//                        ControllerView()
-//                    }
-//                }
-//#endif
-
-//#if canImport(UIKit)
-//                .fullScreenCover(isPresented: $playerModel.showController) {
-//                //.fullScreenCover(isPresented: $playerModel.showController) {
-//                    VStack {
-//                        Spacer()
-//                        ControllerView()
-//                    }
-//                    .edgesIgnoringSafeArea(.all)
-//                }
-//#endif
-                .overlay(alignment: .center) {
-                    ProgressView().opacity(playerModel.state == .buffering ? 1 : 0)
-                        .tint(.white)
-                }
-                .edgesIgnoringSafeArea(.all)
-                .onChange(of: geometry.size) { value in
-                    playerModel.playerSize = value
-                }
-                .task {
-                    /// Store the View size
-                    playerModel.playerSize = geometry.size
-                    /// Load the poster art
-                    if let url = playerModel.metaData.artworkURL {
-                        do {
-                            let (data, _) = try await URLSession.shared.data(from: url)
-#if os(macOS)
-                            playerModel.metaData.artwork = Image(nsImage: NSImage(data: data)!)
-#else
-                            playerModel.metaData.artwork = Image(uiImage: UIImage(data: data)!)
-#endif
-                        } catch {
-                            /// Ignore
-                        }
-                    }
                 }
                 .background(.black)
         }
+        .edgesIgnoringSafeArea(.all)
         .animation(.default, value: playerModel.showController)
         .environmentObject(playerModel)
         .environmentObject(player.coordinator)
