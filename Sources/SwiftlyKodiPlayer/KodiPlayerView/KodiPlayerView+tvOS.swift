@@ -18,7 +18,7 @@ extension KodiPlayerView {
     
     public struct ShowControllerView: ViewModifier {
         /// The Player model
-        @EnvironmentObject var playerModel: PlayerView.PlayerModel
+        @EnvironmentObject var playerModel: KodiPlayerView.PlayerModel
         
         public func body(content: Content) -> some View {
             content
