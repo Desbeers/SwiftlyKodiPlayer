@@ -120,6 +120,7 @@ public struct KodiPlayerView: View {
                     case .paused:
                         VStack {
                             Image(systemName: "pause.fill")
+                                .padding(.top)
                                 .font(.largeTitle)
                             Text(remainingTime(duration: (playerModel.totalTime - playerModel.currentTime)))
                                 .padding()
